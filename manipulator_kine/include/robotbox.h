@@ -21,11 +21,11 @@
 #ifndef ROBOTBOX_H
 #define ROBOTBOX_H
 //this is used for all revolute robot
-#include<vector>
-#include<array>
-#include<cmath>
-#include"Eigen/Core"
-#include"Eigen/Geometry"
+#include <vector>
+#include <array>
+#include <cmath>
+#include "eigen3/Eigen/Core"
+#include "eigen3/Eigen/Geometry"
 #define PI 3.141592653589793
 
 class robotbox

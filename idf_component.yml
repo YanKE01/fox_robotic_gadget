@@ -1,0 +1,11 @@
+version: "0.3.0"
+description: Fox Robotic Gadget
+repository: https://github.com/YanKE01/fox_robotic_gadget.git
+files:
+  exclude:
+    - "rob_dyn_control/**/*"
+    - "rob_dyn_sympybotics/**/*"
+
+dependencies:
+  idf: ">=4.0"
+  espressif/eigen: "=3.4.0~2"
