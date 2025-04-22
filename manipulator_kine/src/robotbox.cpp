@@ -182,53 +182,75 @@ Eigen::MatrixXd robotbox::jacobe(std::vector<double> theta)
   }
 }
 
-bool robotbox::ikine(std::vector<double> &qt, Eigen::MatrixXd tr, std::vector<double> qo, std::vector<double> mask, size_t ilimit,
-  size_t rlimit, double tol, double lambda, double lambdamin)//The inverse kinematics....do the damped inverse Gauss-Newton with Levenberg-Marquadt
+bool robotbox::ikine(std::vector<double> &qt, Eigen::MatrixXd tr, std::vector<double> qo, 
+                     std::vector<double> mask, const std::vector<double>& qmin, const std::vector<double>& qmax, size_t ilimit, size_t rlimit, 
+                     double tol, double lambda, double lambdamin)
 {
   size_t iterations = 0, rejcount = 0;
   std::vector<double> q = qo, qnew(qo.size());
   Eigen::MatrixXd W = Eigen::MatrixXd::Zero(mask.size(), mask.size());
   Eigen::MatrixXd e, forward, J, JtJ, dq, enew;
+
   for (size_t i = 0; i < mask.size(); i++)
     W(i, i) = mask[i];
+
   while (true)
   {
     fkine(forward, q);
     e = tr2delta(forward, tr);
-    if ((W*e.adjoint()).norm() < tol)
+
+    if ((W * e.adjoint()).norm() < tol)
       break;
-    iterations = iterations + 1;
+
+    iterations++;
     if (iterations > ilimit)
       return false;
+
     J = jacobe(q);
-    JtJ = J.adjoint()*W*J;
+    JtJ = J.adjoint() * W * J;
     Eigen::MatrixXd upltemp = Eigen::MatrixXd::Identity(JtJ.rows(), JtJ.cols());
-    dq = ((JtJ + (lambda + lambdamin)*upltemp).inverse())*J.adjoint()*W*e.adjoint();
+    dq = ((JtJ + (lambda + lambdamin) * upltemp).inverse()) * J.adjoint() * W * e.adjoint();
+
     for (size_t i = 0; i < q.size(); i++)
+    {
       qnew[i] = q[i] + dq(i, 0);
+
+      // Clamp qnew within joint limits
+      if (qnew[i] < qmin[i]) qnew[i] = qmin[i];
+      if (qnew[i] > qmax[i]) qnew[i] = qmax[i];
+    }
+
     fkine(forward, qnew);
     enew = tr2delta(forward, tr);
-    if ((W*enew.adjoint()).norm() < (W*e.adjoint()).norm())
+
+    if ((W * enew.adjoint()).norm() < (W * e.adjoint()).norm())
     {
-      q = qnew; e = enew; lambda = lambda / 2; rejcount = 0;
+      q = qnew;
+      e = enew;
+      lambda = lambda / 2;
+      rejcount = 0;
     }
     else
     {
-      lambda = lambda * 2; rejcount = rejcount + 1;
+      lambda = lambda * 2;
+      rejcount++;
       if (rejcount > rlimit)
         return false;
     }
+
     for (size_t i = 0; i < q.size(); i++)
     {
-      if (q[i] > PI)
-        q[i] = q[i] - 2 * PI;
-      else if(q[i]<-PI)
-        q[i] = q[i] + 2 * PI;
+      if (q[i] > M_PI)
+        q[i] -= 2 * M_PI;
+      else if (q[i] < -M_PI)
+        q[i] += 2 * M_PI;
     }
   }
+
   qt = q;
   return true;
 }
+
 
 Eigen::MatrixXd robotbox::tr2delta(Eigen::MatrixXd ta, Eigen::MatrixXd tb)
 {

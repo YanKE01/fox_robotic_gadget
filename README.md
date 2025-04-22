@@ -44,7 +44,7 @@ robot.fkine(forwardf, theta);
 std::cout << "forward kinematics:\n" << forwardf << std::endl;
 
 std::vector<double> theikine;
-bool result = robot.ikine(theikine, forwardf, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, 500, 100, 1);
+bool result = robot.ikine(theikine, forwardf, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, {-2.9, -2.9, -2.9, -2.9, -2.9, -3.1}, {2.9, 2.9, 2.9, 2.9, 2.9, 3.1}, 1000, 100, 1);
 
 if (result) {
     std::cout << "The inverse kinematics: ";

@@ -39,12 +39,12 @@ TEST_CASE("robotbox test six-axis robotic arm", "[robotbox]")
     robot.fkine(forwardf, theta);
     std::cout << "forward kinematics:\n" << forwardf << std::endl;
 
-    theta = {0, -PI / 3, 0, -PI / 6, 0, 0};
+    theta = {PI / 2, -PI / 3, 0, -PI / 6, 0, 0};
     robot.fkine(forwardf, theta);
     std::cout << "forward kinematics:\n" << forwardf << std::endl;
 
     std::vector<double> theikine;
-    bool result = robot.ikine(theikine, forwardf, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, 500, 100, 1);
+    bool result = robot.ikine(theikine, forwardf, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, {-2.9, -2.9, -2.9, -2.9, -2.9, -3.1}, {2.9, 2.9, 2.9, 2.9, 2.9, 3.1}, 1000, 100, 1);
 
     if (result) {
         std::cout << "The inverse kinematics: ";

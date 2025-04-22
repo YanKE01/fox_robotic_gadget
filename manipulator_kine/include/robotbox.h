@@ -56,7 +56,7 @@ public:
   //ikine parameters:  qt:The results of ikine     tr:the robot end-effector pose   qo:initial joint configuration      ilimit: maximum number of iterations (default 500)
             //rlimit: maximum number of consecutive step rejections(default 100)    tol::final error tolerance (default 1e-10)  lambda:initial value of lambda (default 0.1)
             //lambdamin: minimum allowable value of lambda (default 0)
-  bool ikine(std::vector<double> &qt, Eigen::MatrixXd tr, std::vector<double> qo, std::vector<double> mask, size_t ilimit = 500,
+  bool ikine(std::vector<double> &qt, Eigen::MatrixXd tr, std::vector<double> qo, std::vector<double> mask, const std::vector<double>& qmin, const std::vector<double>& qmax, size_t ilimit = 500,
     size_t rlimit = 100, double tol = 1e-10, double lambda = 0.1, double lambdamin = 0.0);//The inverse kinematics....do the damped inverse Gauss-Newton with Levenberg-Marquadt
 
 private:
